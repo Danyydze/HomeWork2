@@ -19,25 +19,21 @@ class ViewController: UIViewController {
         static let speedLabelText = "Select Speed"
         static let colorLabelText = "Select Color"
         static let startButtonTitle = "Start"
-        static let labelTextColor = UIColor.black
-        static let labelFontSize: CGFloat = 25
+        static let labelTextColor = UIColor.white
+        static let labelFontSize: CGFloat = 35
         
         static let backgroundViewColor = UIColor.white
         static let backgroundViewCornerRadius: CGFloat = 15
-        static let animationBackgroundViewWidth: CGFloat = 230
-        static let animationBackgroundViewHeight: CGFloat = 50
+        static let animationBackgroundViewWidth: CGFloat = 300
+        static let animationBackgroundViewHeight: CGFloat = 30
         
-        static let colorBackgroundViewWidth: CGFloat = 200
-        static let colorBackgroundViewHeight: CGFloat = 30
-        static let colorBackgroundViewCornerRadius: CGFloat = 10
-        static let colorLabelFontSize: CGFloat = 20
+        static let colorBackgroundViewWidth: CGFloat = 300
+        static let colorBackgroundViewHeight: CGFloat = 40
         
-        static let speedBackgroundViewWidth: CGFloat = 160
-        static let speedBackgroundViewHeight: CGFloat = 30
-        static let speedBackgroundViewCornerRadius: CGFloat = 10
-        static let speedLabelFontSize: CGFloat = 20
+        static let speedBackgroundViewWidth: CGFloat = 300
+        static let speedBackgroundViewHeight: CGFloat = 40
         
-        static let animationBackgroundViewTopOffset: CGFloat = 100
+        static let animationBackgroundViewTopOffset: CGFloat = 50
         static let speedBackgroundViewBottomOffset: CGFloat = -325
         static let colorBackgroundViewBottomOffset: CGFloat = -180
         
@@ -58,6 +54,7 @@ class ViewController: UIViewController {
     private var selectedAnimationIndex: Int?
     private var selectedSpeedIndex: Int?
     private var selectedBackgroundColor: UIColor?
+    private var startButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,57 +92,44 @@ class ViewController: UIViewController {
     }
     
     private func setupSpeedSelectionLabel() {
-        let speedSelectionLabel = UILabel()
         speedSelectionLabel.text = Constants.speedLabelText
         speedSelectionLabel.textColor = Constants.labelTextColor
-        speedSelectionLabel.font = UIFont.systemFont(ofSize: Constants.labelFontSize)
         speedSelectionLabel.textAlignment = .center
+        speedSelectionLabel.font = UIFont.systemFont(ofSize: Constants.labelFontSize)
         
         self.view.addSubview(speedSelectionLabel)
         
         speedSelectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             speedSelectionLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            speedSelectionLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20), // Отступ сверху
-            speedSelectionLabel.heightAnchor.constraint(equalToConstant: 40) // Высота метки
+            speedSelectionLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -290),
+            speedSelectionLabel.widthAnchor.constraint(equalToConstant: Constants.speedBackgroundViewWidth),
+            speedSelectionLabel.heightAnchor.constraint(equalToConstant: Constants.speedBackgroundViewHeight)
+            
         ])
     }
     
     private func setupAnimationSelectionLabel() {
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = Constants.backgroundViewColor
-        backgroundView.layer.cornerRadius = Constants.backgroundViewCornerRadius
-        backgroundView.layer.masksToBounds = true
-        
         animationSelectionLabel.text = Constants.animationLabelText
         animationSelectionLabel.textColor = Constants.labelTextColor
         animationSelectionLabel.textAlignment = .center
         animationSelectionLabel.font = UIFont.systemFont(ofSize: Constants.labelFontSize)
         
-        backgroundView.addSubview(animationSelectionLabel)
-        
-        self.view.addSubview(backgroundView)
-        
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backgroundView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            backgroundView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: Constants.animationBackgroundViewTopOffset),
-            backgroundView.widthAnchor.constraint(equalToConstant: Constants.animationBackgroundViewWidth),
-            backgroundView.heightAnchor.constraint(equalToConstant: Constants.animationBackgroundViewHeight)
-        ])
+        self.view.addSubview(animationSelectionLabel)
         
         animationSelectionLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            animationSelectionLabel.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
-            animationSelectionLabel.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
-            animationSelectionLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor),
-            animationSelectionLabel.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor)
+            animationSelectionLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            animationSelectionLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: Constants.animationBackgroundViewTopOffset),
+            animationSelectionLabel.widthAnchor.constraint(equalToConstant: Constants.animationBackgroundViewWidth),
+            animationSelectionLabel.heightAnchor.constraint(equalToConstant: Constants.animationBackgroundViewHeight)
         ])
     }
     
     private func setupColorButtons() {
         let colors = [UIColor.black, UIColor.gray, UIColor.white]
-        let colorNames = ["Black", "Gray", "White"]
+        let colorNames = Constants.colorButtonTitles
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -153,88 +137,77 @@ class ViewController: UIViewController {
         stackView.alignment = .center
         stackView.spacing = 20
         
-        for (index,color) in colors.enumerated() {
-            let button = UIButton(type:.system)
-            button.setTitle(colorNames[index], for:.normal)
+        for (index, color) in colors.enumerated() {
+            let button = UIButton(type: .system)
+            button.setTitle(colorNames[index], for: .normal)
             button.backgroundColor = UIColor.clear
-            button.setTitleColor(.black, for:.normal)
+            button.setTitleColor(.black, for: .normal)
             button.layer.borderColor = UIColor.black.cgColor
             button.titleLabel?.font = UIFont.systemFont(ofSize: 30)
             
             button.tag = index
-            button.addTarget(self, action:#selector(colorButtonTapped(_:)), for:.touchUpInside)
+            button.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
             
             stackView.addArrangedSubview(button)
+            colorButtons.append(button)
         }
-        
+
         self.view.addSubview(stackView)
-        
-        stackView.translatesAutoresizingMaskIntoConstraints=false
-        
+
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo:self.view.centerXAnchor),
-            stackView.topAnchor.constraint(equalTo:self.colorSelectionLabel.bottomAnchor, constant:(20)),
-            stackView.heightAnchor.constraint(equalToConstant:(40))
+            stackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            stackView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -360),
+            stackView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            stackView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
     private func setupSpeedButtons() {
+        self.view.addSubview(speedSelectionLabel)
+        
         for (index, title) in Constants.speedButtonTitles.enumerated() {
-            let button = UIButton(type:.system)
-            button.setTitle(title, for:.normal)
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
             button.tag = index
             
-            button.setTitleColor(.black, for:.normal)
+            button.setTitleColor(.black, for: .normal)
             button.titleLabel?.font = UIFont.systemFont(ofSize: 30)
             
-            button.addTarget(self, action:#selector(speedButtonTapped(_:)), for:.touchUpInside)
+            button.addTarget(self, action: #selector(speedButtonTapped(_:)), for: .touchUpInside)
             
             self.speedButtons.append(button)
             
             self.view.addSubview(button)
             
-            button.translatesAutoresizingMaskIntoConstraints=false
+            button.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
-                button.leadingAnchor.constraint(equalTo:self.view.leadingAnchor, constant:(20 + CGFloat(index * 100))),
-                button.topAnchor.constraint(equalTo:self.speedSelectionLabel.bottomAnchor, constant:(20)),
-                button.widthAnchor.constraint(equalToConstant:(80)),
-                button.heightAnchor.constraint(equalToConstant:(40))
+                button.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: (65 + CGFloat(index * 100))),
+                // Убедитесь, что speedSelectionLabel не nil
+                button.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -190),
+                button.widthAnchor.constraint(equalToConstant: 80),
+                button.heightAnchor.constraint(equalToConstant: 40)
             ])
         }
     }
     
     private func setupColorSelectionLabel() {
-        let colorLabelView = UIView()
-        colorLabelView.backgroundColor = Constants.backgroundViewColor
-        colorLabelView.layer.cornerRadius = Constants.colorBackgroundViewCornerRadius
-        colorLabelView.layer.masksToBounds = true
-        
         colorSelectionLabel.text = Constants.colorLabelText
         colorSelectionLabel.textColor = Constants.labelTextColor
-        colorSelectionLabel.font = UIFont.systemFont(ofSize: Constants.colorLabelFontSize)
         colorSelectionLabel.textAlignment = .center
+        colorSelectionLabel.font = UIFont.systemFont(ofSize: Constants.labelFontSize)
         
-        colorLabelView.addSubview(colorSelectionLabel)
-        
-        self.view.addSubview(colorLabelView)
-        
-        colorLabelView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            colorLabelView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            colorLabelView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: Constants.colorBackgroundViewBottomOffset),
-            colorLabelView.widthAnchor.constraint(equalToConstant: Constants.colorBackgroundViewWidth),
-            colorLabelView.heightAnchor.constraint(equalToConstant: Constants.colorBackgroundViewHeight)
-        ])
+        self.view.addSubview(colorSelectionLabel)
         
         colorSelectionLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            colorSelectionLabel.leadingAnchor.constraint(equalTo: colorLabelView.leadingAnchor),
-            colorLabelView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -400),
-            colorSelectionLabel.topAnchor.constraint(equalTo: colorLabelView.topAnchor),
-            colorSelectionLabel.bottomAnchor.constraint(equalTo: colorLabelView.bottomAnchor)
+            colorSelectionLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            colorSelectionLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -480),
+            colorSelectionLabel.widthAnchor.constraint(equalToConstant: Constants.colorBackgroundViewWidth),
+            colorSelectionLabel.heightAnchor.constraint(equalToConstant: Constants.colorBackgroundViewHeight)
         ])
-    }
+        }
     
     private func setupAnimationLabels() {
         for (index, title) in Constants.animationButtonTitles.enumerated() {
@@ -263,11 +236,13 @@ class ViewController: UIViewController {
     }
     
     private func setupStartButton() {
-        let startButton = UIButton(type: .system)
+        startButton = UIButton(type: .system)
         startButton.setTitle(Constants.startButtonTitle, for: .normal)
         
         startButton.setTitleColor(.white, for: .normal)
         startButton.backgroundColor = UIColor.blue
+        startButton.layer.cornerRadius = Constants.backgroundViewCornerRadius
+        startButton.titleLabel?.font = UIFont.systemFont(ofSize: 30)
         
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
         
@@ -319,6 +294,14 @@ class ViewController: UIViewController {
         for button in speedButtons {
             button.isHidden = true
         }
+        for button in colorButtons {
+            button.isHidden = true
+        }
+        gradientLayer?.isHidden = true
+        startButton.isHidden = true
+        animationSelectionLabel.isHidden = true
+        speedSelectionLabel.isHidden = true
+        colorSelectionLabel.isHidden = true
         
         self.view.backgroundColor = selectedBackgroundColor ?? UIColor.white
         
